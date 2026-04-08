@@ -73,7 +73,13 @@
                         <div class="col-md-4 mb-3">
                             <!-- TODO: criar o select status_evento -->
                             <!-- Sugestões: Planejado, Inscrito, Concluído -->
-
+                             <label for="status_evento" class="form-label">Status</label>
+                            <select class="form-select" id="status_evento" name="status_evento" required>
+                                <option value="">Selecione</option>
+                                <option value="Planejado" <?php echo $evento['status_evento'] === 'Planejado' ? 'selected' : ''; ?>>Planejado</option>
+                                <option value="Inscrito" <?php echo $evento['status_evento'] === 'Inscrito' ? 'selected' : ''; ?>>Inscrito</option>
+                                <option value="Concluído" <?php echo $evento['status_evento'] === 'Concluído' ? 'selected' : ''; ?>>Concluído</option>
+                            </select>
                         </div>
                     </div>
 
