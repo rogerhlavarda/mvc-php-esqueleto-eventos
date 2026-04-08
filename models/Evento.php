@@ -15,10 +15,13 @@ class Evento
     {
         // TODO: criar um SELECT para buscar todos os registros da tabela eventos_corrida.
         // Dica: ordenar por data_evento ASC e id DESC.
+        $sql = 'SELECT * FROM eventos_corrida ORDER BY data_evento ASC, id DESC';
 
         // TODO: executar a consulta.
+        $comando = $this->conexao->query($sql);
 
         // TODO: retornar os resultados com fetchAll(PDO::FETCH_ASSOC).
+        return $comando->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function buscarPorId($id)

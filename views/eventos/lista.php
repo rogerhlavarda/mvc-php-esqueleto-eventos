@@ -41,11 +41,11 @@
                             <!-- TODO: completar as colunas da linha com os dados do evento -->
                             <tr>
                                 <td><?php echo htmlspecialchars($evento['id']); ?></td>
-                                <td><!-- TODO: nome --></td>
-                                <td><!-- TODO: cidade --></td>
-                                <td><!-- TODO: data formatada --></td>
-                                <td><!-- TODO: distancia --></td>
-                                <td><!-- TODO: status_evento --></td>
+                                <td><?php echo htmlspecialchars($evento['nome']); ?></td>
+                                <td><?php echo htmlspecialchars($evento['cidade']); ?></td>
+                                <td><?php echo date('d/m/Y', strtotime($evento['data_evento'])); ?></td>
+                                <td><?php echo htmlspecialchars($evento['distancia']); ?></td>
+                                <td><?php echo htmlspecialchars($evento['status_evento']); ?></td>
                                 <td class="text-center">
                                     <a href="index.php?acao=editar&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-primary">
                                         Editar

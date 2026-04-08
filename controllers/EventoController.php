@@ -13,12 +13,13 @@ class EventoController
     public function listar()
     {
         // TODO: buscar todos os eventos no model.
-        // Dica: use o método listarTodos().
+        $eventos = $this->modeloEvento->listarTodos();
 
         $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : '';
         $tipoMensagem = isset($_GET['tipo']) ? $_GET['tipo'] : 'success';
 
         // TODO: carregar a view de listagem.
+        require 'views/eventos/lista.php';
     }
 
     public function criar()
