@@ -14,11 +14,12 @@
 
                 <form action="index.php?acao=<?php echo $acaoFormulario; ?>" method="POST">
                     <?php if ($acaoFormulario === 'atualizar') : ?>
+                        <!-- O id oculto so e enviado na edicao, porque um registro novo ainda nao possui chave primaria. -->
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($evento['id']); ?>">
                     <?php endif; ?>
 
-                    <!-- TODO: criar o campo nome -->
-                     <div class="mb-3">
+                    <!-- Campo principal do formulario: identifica o evento e sera salvo na coluna nome. -->
+                    <div class="mb-3">
                         <label for="nome" class="form-label">Nome do evento</label>
                         <input
                             type="text"
@@ -29,8 +30,8 @@
                             required
                         >
                     </div>
-                    <!-- TODO: criar o campo cidade -->
-                     <div class="mb-3">
+                    <!-- Campo de texto simples usado para registrar a cidade onde a prova acontece. -->
+                    <div class="mb-3">
                         <label for="cidade" class="form-label">Cidade</label>
                         <input
                             type="text"
@@ -44,8 +45,8 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <!-- TODO: criar o campo data_evento -->
-                             <label for="data_evento" class="form-label">Data</label>
+                            <!-- O input date envia a data no formato esperado pelo banco e facilita a validacao no navegador. -->
+                            <label for="data_evento" class="form-label">Data</label>
                             <input
                                 type="date"
                                 class="form-control"
@@ -57,8 +58,7 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <!-- TODO: criar o select distancia -->
-                            <!-- Sugestões: 5 km, 10 km, 15 km, 21 km, 42 km -->
+                            <!-- O select limita as opcoes de distancia para manter o cadastro padronizado. -->
                             <label for="distancia" class="form-label">Distância</label>
                             <select class="form-select" id="distancia" name="distancia" required>
                                 <option value="">Selecione</option>
@@ -71,9 +71,8 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <!-- TODO: criar o select status_evento -->
-                            <!-- Sugestões: Planejado, Inscrito, Concluído -->
-                             <label for="status_evento" class="form-label">Status</label>
+                            <!-- O status representa a etapa atual do aluno em relacao ao evento cadastrado. -->
+                            <label for="status_evento" class="form-label">Status</label>
                             <select class="form-select" id="status_evento" name="status_evento" required>
                                 <option value="">Selecione</option>
                                 <option value="Planejado" <?php echo $evento['status_evento'] === 'Planejado' ? 'selected' : ''; ?>>Planejado</option>
@@ -84,8 +83,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <!-- TODO: criar o textarea observacoes -->
-                         <label for="observacoes" class="form-label">Observações</label>
+                        <!-- O textarea recebe anotacoes livres que nao cabem bem em campos curtos. -->
+                        <label for="observacoes" class="form-label">Observações</label>
                         <textarea
                             class="form-control"
                             id="observacoes"

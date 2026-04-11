@@ -12,18 +12,19 @@ class EventoController
 
     public function listar()
     {
-        // TODO: buscar todos os eventos no model.
+        // O controller pede ao model a lista completa de eventos para repassar esses dados para a view.
         $eventos = $this->modeloEvento->listarTodos();
 
         $mensagem = isset($_GET['mensagem']) ? $_GET['mensagem'] : '';
         $tipoMensagem = isset($_GET['tipo']) ? $_GET['tipo'] : 'success';
 
-        // TODO: carregar a view de listagem.
+        // A view usa as variaveis acima para montar a tabela e exibir mensagens ao usuario.
         require 'views/eventos/lista.php';
     }
 
     public function criar()
     {
+        // Esse array vazio permite reutilizar a mesma view tanto no cadastro quanto na edicao sem gerar indices indefinidos.
         $evento = [
             'id' => '',
             'nome' => '',
@@ -42,13 +43,26 @@ class EventoController
     public function salvar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // TODO: montar o array $dados com os campos recebidos do formulário.
-            // Campos esperados:
-            // nome, cidade, data_evento, distancia, status_evento, observacoes
+            // Este array organiza os dados do formulario em um formato previsivel para o model.
+            // Os nomes das chaves acompanham os nomes das colunas da tabela e dos campos do form.
+            $dados = [
+                'nome' => $_POST['nome'],
+                'cidade' => $_POST['cidade'],
+                'data_evento' => $_POST['data_evento'],
+                'distancia' => $_POST['distancia'],
+                'status_evento' => $_POST['status_evento'],
+                'observacoes' => $_POST['observacoes']
+            ];
 
-            // TODO: chamar o model para cadastrar o evento.
+            // O model executa o INSERT no banco e devolve true ou false para indicar o resultado.
+            $sucesso = $this->modeloEvento->cadastrar($dados);
 
-            // TODO: redirecionar para a listagem com mensagem de sucesso ou erro.
+            // Depois do POST, o redirecionamento evita reenvio do formulario ao atualizar a pagina.
+            if ($sucesso) {
+                header('Location: index.php?mensagem=Evento cadastrado com sucesso.&tipo=success');
+            } else {
+                header('Location: index.php?mensagem=Erro ao cadastrar o evento.&tipo=danger');
+            }
             exit;
         }
     }
@@ -60,21 +74,44 @@ class EventoController
             exit;
         }
 
-        // TODO: converter o id para inteiro.
-        // TODO: buscar o evento pelo id usando o model.
-        // TODO: se não encontrar, redirecionar com mensagem.
+        $id = (int) $_GET['id'];
+        // O id vindo da URL identifica qual registro deve ser carregado para preencher o formulario.
+        $evento = $this->modeloEvento->buscarPorId($id);
+        // Se o registro nao existir, o fluxo volta para a listagem para evitar tela de edicao inconsistente.
+        if (!$evento) {
+            header('Location: index.php?mensagem=Evento não encontrado.&tipo=warning');
+            exit;
+        }
 
         $acaoFormulario = 'atualizar';
         $tituloPagina = 'Editar evento';
 
-        // TODO: carregar a mesma view do formulário.
+        // A tela de cadastro e edicao e a mesma; o que muda sao os dados enviados para a view.
+        require 'views/eventos/formulario.php';
     }
 
     public function atualizar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // TODO opcional:
-            // implementar a atualização do evento reaproveitando a lógica do cadastro.
+            // A atualizacao reaproveita a estrutura do cadastro, mas inclui o id para localizar o registro.
+            $dados = [
+                'id' => $_POST['id'],
+                'nome' => $_POST['nome'],
+                'cidade' => $_POST['cidade'],
+                'data_evento' => $_POST['data_evento'],
+                'distancia' => $_POST['distancia'],
+                'status_evento' => $_POST['status_evento'],
+                'observacoes' => $_POST['observacoes']
+            ];
+
+            $sucesso = $this->modeloEvento->atualizar($dados);
+
+            if ($sucesso) {
+                header('Location: index.php?mensagem=Evento atualizado com sucesso.&tipo=success');
+            } else {
+                header('Location: index.php?mensagem=Erro ao atualizar o evento.&tipo=danger');
+            }
+
             exit;
         }
     }
@@ -86,7 +123,16 @@ class EventoController
             exit;
         }
 
-        // TODO opcional:
-        // implementar a exclusão por id.
+        // A exclusao usa apenas o id, pois ele identifica de forma unica o evento a ser removido.
+        $id = (int) $_GET['id'];
+        $sucesso = $this->modeloEvento->excluir($id);
+
+        if ($sucesso) {
+            header('Location: index.php?mensagem=Evento removido com sucesso.&tipo=success');
+        } else {
+            header('Location: index.php?mensagem=Erro ao remover o evento.&tipo=danger');
+        }
+        
+        exit;
     }
 }

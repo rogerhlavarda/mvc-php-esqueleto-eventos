@@ -38,11 +38,12 @@
                         </tr>
                     <?php else : ?>
                         <?php foreach ($eventos as $evento) : ?>
-                            <!-- TODO: completar as colunas da linha com os dados do evento -->
+                            <!-- Cada iteracao percorre um registro retornado pelo model e preenche uma linha da tabela. -->
                             <tr>
                                 <td><?php echo htmlspecialchars($evento['id']); ?></td>
                                 <td><?php echo htmlspecialchars($evento['nome']); ?></td>
                                 <td><?php echo htmlspecialchars($evento['cidade']); ?></td>
+                                <!-- O banco armazena a data em Y-m-d, mas a interface mostra no padrao brasileiro d/m/Y. -->
                                 <td><?php echo date('d/m/Y', strtotime($evento['data_evento'])); ?></td>
                                 <td><?php echo htmlspecialchars($evento['distancia']); ?></td>
                                 <td><?php echo htmlspecialchars($evento['status_evento']); ?></td>

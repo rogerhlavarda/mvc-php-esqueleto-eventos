@@ -18,6 +18,7 @@ class Database
                 $this->senha
             );
 
+            // Com esse modo de erro ativo, falhas de conexao ou SQL geram excecoes e ficam mais faceis de diagnosticar.
             $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return $conexao;
