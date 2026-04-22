@@ -1,5 +1,6 @@
 <?php
 require_once 'models/Evento.php';
+require_once 'helpers/auth.php';
 
 class EventoController
 {
@@ -24,6 +25,8 @@ class EventoController
 
     public function criar()
     {
+        exigirAutenticacao();
+
         // Esse array vazio permite reutilizar a mesma view tanto no cadastro quanto na edicao sem gerar indices indefinidos.
         $evento = [
             'id' => '',
@@ -42,6 +45,8 @@ class EventoController
 
     public function salvar()
     {
+        exigirAutenticacao();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Este array organiza os dados do formulario em um formato previsivel para o model.
             // Os nomes das chaves acompanham os nomes das colunas da tabela e dos campos do form.
@@ -69,6 +74,8 @@ class EventoController
 
     public function editar()
     {
+        exigirAutenticacao();
+
         if (!isset($_GET['id'])) {
             header('Location: index.php?mensagem=ID do evento não informado.&tipo=warning');
             exit;
@@ -92,6 +99,8 @@ class EventoController
 
     public function atualizar()
     {
+        exigirAutenticacao();
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // A atualizacao reaproveita a estrutura do cadastro, mas inclui o id para localizar o registro.
             $dados = [
@@ -118,6 +127,8 @@ class EventoController
 
     public function excluir()
     {
+        exigirAutenticacao();
+
         if (!isset($_GET['id'])) {
             header('Location: index.php?mensagem=ID do evento não informado.&tipo=warning');
             exit;

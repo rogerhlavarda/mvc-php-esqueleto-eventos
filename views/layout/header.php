@@ -8,9 +8,21 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-light">
+    <?php $usuarioAutenticado = obterUsuarioAutenticado(); ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.php">Corridas MVC</a>
+            <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-sm btn-outline-light" href="index.php">Eventos</a>
+                <?php if ($usuarioAutenticado) : ?>
+                    <span class="navbar-text text-white">
+                        <?php echo htmlspecialchars($usuarioAutenticado['nome']); ?>
+                    </span>
+                    <a class="btn btn-sm btn-light" href="index.php?acao=logout">Sair</a>
+                <?php else : ?>
+                    <a class="btn btn-sm btn-light" href="index.php?acao=login">Login</a>
+                <?php endif; ?>
+            </div>
         </div>
     </nav>
 

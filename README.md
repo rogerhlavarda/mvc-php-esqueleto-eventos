@@ -1,40 +1,52 @@
-# Versão Para Aula
+# Sessões em PHP no Projeto
 
-Esta pasta contém uma cópia do projeto preparada para codificação em aula.
+Este projeto já possui um CRUD de eventos em MVC simples. A ideia é usar essa base para introduzir sessões em um sistema real, sem adicionar complexidade desnecessária.
 
-## O que já está pronto
+## Estrutura atual do projeto
 
-- Estrutura MVC
-- Roteamento no `index.php`
-- Conexão com banco
-- Layout com Bootstrap
-- Script SQL
-
-## O que vamos codar em aula
-
-- `models/Evento.php`
-  - `listarTodos()`
-  - `cadastrar()`
+- `index.php`
+  - ponto de entrada e roteador simples por `acao`
 - `controllers/EventoController.php`
-  - `listar()`
-  - `salvar()`
-  - `editar()`
-- `views/eventos/lista.php`
-  - colunas da tabela
-- `views/eventos/formulario.php`
-  - campos do formulário
+  - fluxo do CRUD de eventos
+- `models/Evento.php`
+  - acesso ao banco com PDO
+- `views/eventos/*.php`
+  - listagem e formulário
+- `views/layout/*.php`
+  - cabeçalho e rodapé compartilhados
 
-## Ordem de implementação
+## Onde sessões fazem sentido aqui
 
-1. Implementar `listarTodos()`
-2. Implementar `listar()`
-3. Completar a `lista.php`
-4. Montar o `formulario.php`
-5. Implementar `salvar()`
-6. Implementar `editar()`
+- no login, para manter o usuário autenticado entre páginas
+- na proteção das ações de cadastro, edição, atualização e exclusão
+- na exibição condicional de botões e informações do usuário no layout
+- no logout, para encerrar a autenticação
+
+## O que já foi preparado
+
+- rotas novas de autenticação em `index.php`
+- `controllers/AuthController.php`
+- `helpers/auth.php`
+- `views/auth/login.php`
+- proteção estrutural das ações restritas com `exigirAutenticacao()`
+- navegação com links de login/logout
+- implementação completa da autenticação com sessão
+
+## O que a sessão faz no projeto
+
+- inicia a sessão com `session_start()`
+- grava o usuário autenticado em `$_SESSION`
+- lê a sessão para identificar o usuário logado
+- protege as ações de cadastro, edição, atualização e exclusão
+- destrói a sessão no logout
+
+## Credenciais de demonstração
+
+- E-mail: `usuario@exemplo.com`
+- Senha: `123456`
 
 ## Como usar
 
 1. Importar `database/eventos.sql`
-2. Abrir `http://localhost/crud-mvc-esqueleto/`
-3. Completar os `TODO`s durante a aula
+2. Abrir `http://localhost/mvc-php-esqueleto-eventos/`
+3. Fazer login com as credenciais de demonstração

@@ -1,11 +1,17 @@
 <?php require 'views/layout/header.php'; ?>
 
+<?php $usuarioAutenticado = usuarioEstaAutenticado(); ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 mb-1">Eventos Esportivos</h1>
         <p class="text-muted mb-0">CRUD introdutório em PHP puro usando MVC com tema de corrida de rua.</p>
     </div>
-    <a href="index.php?acao=criar" class="btn btn-success">Novo evento</a>
+    <?php if ($usuarioAutenticado) : ?>
+        <a href="index.php?acao=criar" class="btn btn-success">Novo evento</a>
+    <?php else : ?>
+        <a href="index.php?acao=login" class="btn btn-outline-success">Fazer login</a>
+    <?php endif; ?>
 </div>
 
 <?php if (!empty($mensagem)) : ?>
@@ -48,12 +54,16 @@
                                 <td><?php echo htmlspecialchars($evento['distancia']); ?></td>
                                 <td><?php echo htmlspecialchars($evento['status_evento']); ?></td>
                                 <td class="text-center">
-                                    <a href="index.php?acao=editar&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-primary">
-                                        Editar
-                                    </a>
-                                    <a href="index.php?acao=excluir&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-danger">
-                                        Excluir
-                                    </a>
+                                    <?php if ($usuarioAutenticado) : ?>
+                                        <a href="index.php?acao=editar&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-primary">
+                                            Editar
+                                        </a>
+                                        <a href="index.php?acao=excluir&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-danger">
+                                            Excluir
+                                        </a>
+                                    <?php else : ?>
+                                        <span class="badge text-bg-secondary">Login necessário</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

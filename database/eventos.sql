@@ -1,4 +1,4 @@
--- Este script prepara o ambiente da aula: cria o banco, a tabela principal e alguns registros de exemplo.
+-- Este script prepara o ambiente do projeto: cria o banco, a tabela principal e alguns registros de exemplo.
 CREATE DATABASE IF NOT EXISTS mvc_eventos CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 USE mvc_eventos;
