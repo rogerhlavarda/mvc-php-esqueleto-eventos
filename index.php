@@ -6,6 +6,9 @@ require_once 'controllers/EventoController.php';
 require_once 'controllers/AuthController.php';
 require_once 'helpers/auth.php';
 
+// A sessão é iniciada no começo da requisição para que autenticação e CSRF funcionem em toda a aplicação.
+iniciarSessao();
+
 $controlador = new EventoController();
 $controladorAuth = new AuthController();
 $acao = isset($_GET['acao']) ? $_GET['acao'] : 'listar';

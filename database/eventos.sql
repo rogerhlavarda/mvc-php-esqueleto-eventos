@@ -3,6 +3,15 @@ CREATE DATABASE IF NOT EXISTS mvc_eventos CHARACTER SET utf8mb4 COLLATE utf8mb4_
 
 USE mvc_eventos;
 
+-- A tabela de usuários permite autenticar no banco sem deixar credenciais fixas no código.
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- A tabela guarda os campos usados pelo CRUD e um timestamp automatico para registrar a criacao.
 CREATE TABLE IF NOT EXISTS eventos_corrida (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,6 +23,13 @@ CREATE TABLE IF NOT EXISTS eventos_corrida (
     observacoes TEXT,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- A senha abaixo foi gerada com password_hash('123456', PASSWORD_DEFAULT).
+INSERT INTO usuarios (nome, email, senha) VALUES
+('Usuário Demo', 'usuario@exemplo.com', '$2y$10$vi8n4rDnaEnntzgwsD0pmuHnEzo73QmA1WLJYN047g.FBAQCeN46i')
+ON DUPLICATE KEY UPDATE
+nome = VALUES(nome),
+senha = VALUES(senha);
 
 -- Estes dados iniciais facilitam os testes da listagem e da edicao logo apos importar o script.
 INSERT INTO eventos_corrida (nome, cidade, data_evento, distancia, status_evento, observacoes) VALUES

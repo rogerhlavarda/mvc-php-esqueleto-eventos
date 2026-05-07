@@ -18,7 +18,10 @@
                     <span class="navbar-text text-white">
                         <?php echo htmlspecialchars($usuarioAutenticado['nome']); ?>
                     </span>
-                    <a class="btn btn-sm btn-light" href="index.php?acao=logout">Sair</a>
+                    <form action="index.php?acao=logout" method="POST" class="m-0">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(gerarTokenCsrf()); ?>">
+                        <button type="submit" class="btn btn-sm btn-light">Sair</button>
+                    </form>
                 <?php else : ?>
                     <a class="btn btn-sm btn-light" href="index.php?acao=login">Login</a>
                 <?php endif; ?>

@@ -58,9 +58,13 @@
                                         <a href="index.php?acao=editar&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-primary">
                                             Editar
                                         </a>
-                                        <a href="index.php?acao=excluir&id=<?php echo $evento['id']; ?>" class="btn btn-sm btn-outline-danger">
-                                            Excluir
-                                        </a>
+                                        <form action="index.php?acao=excluir" method="POST" class="d-inline">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($evento['id']); ?>">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(gerarTokenCsrf()); ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja realmente excluir este evento?');">
+                                                Excluir
+                                            </button>
+                                        </form>
                                     <?php else : ?>
                                         <span class="badge text-bg-secondary">Login necessário</span>
                                     <?php endif; ?>

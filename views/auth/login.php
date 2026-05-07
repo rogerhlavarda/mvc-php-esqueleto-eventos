@@ -15,13 +15,9 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="alert alert-light border">
-                    <strong>Usuário de demonstração:</strong><br>
-                    E-mail: usuario@exemplo.com<br>
-                    Senha: 123456
-                </div>
-
                 <form action="index.php?acao=autenticar" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(gerarTokenCsrf()); ?>">
+
                     <div class="mb-3">
                         <label for="email" class="form-label">E-mail</label>
                         <input type="email" class="form-control" id="email" name="email" required>

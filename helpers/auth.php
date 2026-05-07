@@ -32,17 +32,40 @@ function exigirAutenticacao()
     }
 }
 
-function credenciaisValidas($email, $senha)
+function gerarTokenCsrf()
 {
-    // Usuário fixo para manter o exemplo simples.
-    return $email === 'usuario@exemplo.com' && $senha === '123456';
+    iniciarSessao();
+
+    // O token identifica que o formulário foi gerado pela própria aplicação.
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf_token'];
 }
 
-function montarUsuarioDeExemplo($email)
+function validarTokenCsrf($token)
+{
+    iniciarSessao();
+
+    // hash_equals() evita comparações inseguras entre o valor recebido e o valor salvo na sessão.
+    return isset($_SESSION['csrf_token']) && is_string($token) && hash_equals($_SESSION['csrf_token'], $token);
+}
+
+function exigirTokenCsrf($token)
+{
+    if (!validarTokenCsrf($token)) {
+        header('Location: index.php?mensagem=Token de segurança inválido. Recarregue a página e tente novamente.&tipo=danger');
+        exit;
+    }
+}
+
+function montarSessaoUsuario(array $usuario)
 {
     return [
-        'nome' => 'Usuário Demo',
-        'email' => $email
+        'id' => $usuario['id'],
+        'nome' => $usuario['nome'],
+        'email' => $usuario['email']
     ];
 }
 

@@ -5,6 +5,8 @@ require_once 'helpers/auth.php';
 class EventoController
 {
     private $modeloEvento;
+    private $distanciasPermitidas = ['5 km', '10 km', '15 km', '21 km', '42 km'];
+    private $statusPermitidos = ['Planejado', 'Inscrito', 'Concluído'];
 
     public function __construct()
     {
@@ -48,16 +50,17 @@ class EventoController
         exigirAutenticacao();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            exigirTokenCsrf($_POST['csrf_token'] ?? '');
+
             // Este array organiza os dados do formulario em um formato previsivel para o model.
             // Os nomes das chaves acompanham os nomes das colunas da tabela e dos campos do form.
-            $dados = [
-                'nome' => $_POST['nome'],
-                'cidade' => $_POST['cidade'],
-                'data_evento' => $_POST['data_evento'],
-                'distancia' => $_POST['distancia'],
-                'status_evento' => $_POST['status_evento'],
-                'observacoes' => $_POST['observacoes']
-            ];
+            $dados = $this->normalizarDadosEvento($_POST);
+
+            $erros = $this->validarDadosEvento($dados);
+            if (!empty($erros)) {
+                header('Location: index.php?acao=criar&mensagem=' . urlencode($erros[0]) . '&tipo=warning');
+                exit;
+            }
 
             // O model executa o INSERT no banco e devolve true ou false para indicar o resultado.
             $sucesso = $this->modeloEvento->cadastrar($dados);
@@ -102,16 +105,18 @@ class EventoController
         exigirAutenticacao();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            exigirTokenCsrf($_POST['csrf_token'] ?? '');
+
             // A atualizacao reaproveita a estrutura do cadastro, mas inclui o id para localizar o registro.
-            $dados = [
-                'id' => $_POST['id'],
-                'nome' => $_POST['nome'],
-                'cidade' => $_POST['cidade'],
-                'data_evento' => $_POST['data_evento'],
-                'distancia' => $_POST['distancia'],
-                'status_evento' => $_POST['status_evento'],
-                'observacoes' => $_POST['observacoes']
-            ];
+            $dados = $this->normalizarDadosEvento($_POST);
+            $dados['id'] = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+
+            $erros = $this->validarDadosEvento($dados, true);
+            if (!empty($erros)) {
+                $idRedirecionamento = isset($_POST['id']) ? (int) $_POST['id'] : 0;
+                header('Location: index.php?acao=editar&id=' . $idRedirecionamento . '&mensagem=' . urlencode($erros[0]) . '&tipo=warning');
+                exit;
+            }
 
             $sucesso = $this->modeloEvento->atualizar($dados);
 
@@ -129,13 +134,20 @@ class EventoController
     {
         exigirAutenticacao();
 
-        if (!isset($_GET['id'])) {
-            header('Location: index.php?mensagem=ID do evento não informado.&tipo=warning');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?mensagem=A exclusão deve ser enviada por formulário seguro.&tipo=warning');
             exit;
         }
 
+        exigirTokenCsrf($_POST['csrf_token'] ?? '');
+
         // A exclusao usa apenas o id, pois ele identifica de forma unica o evento a ser removido.
-        $id = (int) $_GET['id'];
+        $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+        if (!$id) {
+            header('Location: index.php?mensagem=ID do evento não informado ou inválido.&tipo=warning');
+            exit;
+        }
+
         $sucesso = $this->modeloEvento->excluir($id);
 
         if ($sucesso) {
@@ -145,5 +157,64 @@ class EventoController
         }
         
         exit;
+    }
+
+    private function normalizarDadosEvento($dados)
+    {
+        return [
+            'nome' => isset($dados['nome']) ? trim($dados['nome']) : '',
+            'cidade' => isset($dados['cidade']) ? trim($dados['cidade']) : '',
+            'data_evento' => isset($dados['data_evento']) ? trim($dados['data_evento']) : '',
+            'distancia' => isset($dados['distancia']) ? trim($dados['distancia']) : '',
+            'status_evento' => isset($dados['status_evento']) ? trim($dados['status_evento']) : '',
+            'observacoes' => isset($dados['observacoes']) ? trim($dados['observacoes']) : ''
+        ];
+    }
+
+    private function validarDadosEvento($dados, $exigirId = false)
+    {
+        $erros = [];
+
+        // O servidor não deve confiar só nas validações do navegador.
+        if ($exigirId && empty($dados['id'])) {
+            $erros[] = 'ID do evento inválido.';
+        }
+
+        if ($dados['nome'] === '' || mb_strlen($dados['nome']) > 150) {
+            $erros[] = 'Informe um nome de evento com até 150 caracteres.';
+        }
+
+        if ($dados['cidade'] === '' || mb_strlen($dados['cidade']) > 100) {
+            $erros[] = 'Informe uma cidade com até 100 caracteres.';
+        }
+
+        if (!$this->dataEhValida($dados['data_evento'])) {
+            $erros[] = 'Informe uma data válida para o evento.';
+        }
+
+        if (!in_array($dados['distancia'], $this->distanciasPermitidas, true)) {
+            $erros[] = 'Selecione uma distância válida.';
+        }
+
+        if (!in_array($dados['status_evento'], $this->statusPermitidos, true)) {
+            $erros[] = 'Selecione um status válido.';
+        }
+
+        if (mb_strlen($dados['observacoes']) > 1000) {
+            $erros[] = 'As observações devem ter no máximo 1000 caracteres.';
+        }
+
+        return $erros;
+    }
+
+    private function dataEhValida($data)
+    {
+        $partes = explode('-', $data);
+
+        if (count($partes) !== 3) {
+            return false;
+        }
+
+        return checkdate((int) $partes[1], (int) $partes[2], (int) $partes[0]);
     }
 }

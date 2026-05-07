@@ -32,12 +32,13 @@ Este projeto já possui um CRUD de eventos em MVC simples. A ideia é usar essa 
 - navegação com links de login/logout
 - implementação completa da autenticação com sessão
 
-## O que a sessão faz no projeto
+## O que a autenticação faz no projeto
 
 - inicia a sessão com `session_start()`
 - grava o usuário autenticado em `$_SESSION`
 - lê a sessão para identificar o usuário logado
 - protege as ações de cadastro, edição, atualização e exclusão
+- valida formulários com token CSRF
 - destrói a sessão no logout
 
 ## Credenciais de demonstração

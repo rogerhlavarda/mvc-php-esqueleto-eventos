@@ -13,6 +13,8 @@
                 </div>
 
                 <form action="index.php?acao=<?php echo $acaoFormulario; ?>" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(gerarTokenCsrf()); ?>">
+
                     <?php if ($acaoFormulario === 'atualizar') : ?>
                         <!-- O id oculto so e enviado na edicao, porque um registro novo ainda nao possui chave primaria. -->
                         <input type="hidden" name="id" value="<?php echo htmlspecialchars($evento['id']); ?>">
